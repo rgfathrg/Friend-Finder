@@ -27,7 +27,7 @@ var friends = [
     },
     {
         name: "Surko",
-        photo: "asdfg",
+        photo: "https://www.wikihow.com/images/f/ff/Draw-a-Cute-Cartoon-Person-Step-14.jpg",
         scores: [
             2,
             4,
