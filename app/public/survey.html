@@ -19,6 +19,24 @@
 </head>
 
 <body>
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document" data-toggle="modal" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Friend</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="jumbotron">
         <h1 class="display-4">Friend-Finder</h1>
         <hr class="my-4">
@@ -153,7 +171,6 @@
                 parseInt($("#select10").val())
             ];
             var scoreTotal = selectArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-            console.log(scoreTotal);
             var newFriend = {
                 name: $("#name").val().trim(),
                 photo: $("#pic").val().trim(),
@@ -161,30 +178,37 @@
             };
             var perFriend = 51;
             var newF = "";
-            find();
+            
             function find() {
                 $.get("/api/friends", function (req, res) {
-                req.forEach(function (element) {
-                    const selectArr = element.scores;
-                    var totScore = (selectArr.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue), 0));
-                    if (Math.abs(totScore - scoreTotal) < perFriend) {
-                        perFriend = Math.abs(totScore - scoreTotal);
-                        newF = element;
-                        console.log(perFriend);
+                    req.forEach(function (element) {
+                        const selectArr = element.scores;
+                        var totScore = (selectArr.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue), 0));
+                        if (Math.abs(totScore - scoreTotal) < perFriend) {
+                            perFriend = Math.abs(totScore - scoreTotal);
+                            newF = element;
+                        }
+                        else {
+                            console.log(totScore);
+                        }
+                    })
+                    function modalAdd() {
+                        let friend = `<p> ${newF.name}</p>
+                        <img src="${newF.photo}" style="height: 200px">`;   
+                        $(".modal-body").append(friend);
+                        $("#myModal").modal("show");
+                        console.log("this ran");
+                        console.log(friend);
                     }
-                    else {
-                        console.log(totScore);
-                    }
-                })
-                console.log(newF);
-            })
+                    modalAdd();
+                });
             }
+            find();
             $.post("/api/friends", newFriend)
                 .then(function (data) {
                     console.log("app/public/survey.html", data);
-                    alert("Adding friend...");
                 });
-            
+
         });
 
 
